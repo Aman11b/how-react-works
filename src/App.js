@@ -73,9 +73,29 @@ function TabContent({ item }) {
   const [likes, setLikes] = useState(0);
 
   function handleInc() {
-    setLikes(likes + 1);
+    setLikes((likes) => likes + 1);
+  }
+  function handleTripleInc() {
+    // setLikes(likes + 1); like =0 later 1
+    // setLikes(likes + 1); like still 0 asynchronous so later still 1
+    // setLikes(likes + 1); again same at the end its 1
+    // it will be increates by 1 not 3
+
+    // setLikes(likes + 3); does works too but right ways is
+    setLikes((likes) => likes + 1);
+    setLikes((likes) => likes + 1);
+    setLikes((likes) => likes + 1);
+    // this works coz we are getting accesss to lates updated state
   }
 
+  function handleUndo() {
+    setShowDetails(true);
+    setLikes(0);
+  }
+
+  function handleUndoLater() {
+    setTimeout(handleUndo, 2000);
+  }
   return (
     <div className="tab-content">
       <h4>{item.summary}</h4>
@@ -89,13 +109,13 @@ function TabContent({ item }) {
         <div className="hearts-counter">
           <span>{likes} ❤️</span>
           <button onClick={handleInc}>+</button>
-          <button>+++</button>
+          <button onClick={handleTripleInc}>+++</button>
         </div>
       </div>
 
       <div className="tab-undo">
-        <button>Undo</button>
-        <button>Undo in 2s</button>
+        <button onClick={handleUndo}>Undo</button>
+        <button onClick={handleUndoLater}>Undo in 2s</button>
       </div>
     </div>
   );
@@ -252,4 +272,59 @@ function DifferentContent() {
  * 2. KEY PROP TO RESET STATE (CHANGING KEY)
  * -> if we have the same element at the same position in the tree the dom elelemt  and state will be kept
  * -> if we have a question component with a answer and we chnage the question the answer will remain the same and irrelevent in this case coz of the rule hnece use key so that its is differentiated and the sate will be reset
+ */
+
+/**
+ * TWO TYPES OF LOGIC IN REACT COMPONENT
+ * 1. render logic
+ * -> code that lives at the top level of th component function
+ * -> participate in describing how the component view looks like
+ * -> executed every time the component renders
+ * 2.event handeling function
+ * -> exexcuted as concequences of the event that the handler is listening for
+ * -> code that actually does things
+ */
+
+/**
+ * FUNCTIONAL PROGRAMMING PRINCIPLES
+ * 1.Side effect: dependency on or modification of any dat outside the function scope."Interration with outside world".Example: mutating external variable,HTTP request,Writing to DOM
+ * 2. Pure function:a function that has no side effects
+ * -> given the same input ,a pure function will always return the same output
+ */
+
+/**
+ * RULES FOR RENDER LOGIC
+ * -> component must be pure when it comes to render login: given the same prop(input), a component instances should always return the same JSX (output)
+ * -> render login must produce no sde effects: no interaction with the "outside world" is allwed.
+ * So, in rende logic:
+ * - Do not perform network request (API Calls)
+ * - Do not start timer
+ * - Do not directly use the DOM API
+ * - Do not mutate object or variable outside of the function scope(This is why we cant mutate props)
+ * - Do not uodate state(or Ref): this will create an infinite loop
+ */
+
+/**
+ * STATE UPDATE BATCHING
+ * => How state update are batched
+ * -> Render are not triggered immediately,but scheduled for when JS engine has some "free time".There is also bacthing of multiple setState call in event handlers
+ ```
+ const reset=fuction(){
+ setAnswer("")
+ console.log(answer)
+ setBest(true)
+ setSolved(false)}
+ ```
+ -> it does not update state and render+ commit 3 times 
+ -> all will be batched as one state update for entire event handler then redner+commit(just one render and commit per event handler)
+ -> but what will be value of console.log 
+ -> statee is stored in fiber tree during render phase 
+ -> at this point,re-render has not happened yet
+ -> therefore ,answer still containes current state,not the updated state(" ") -its is "Stale state"
+ => that is why upadting state in react is asynchronous
+ -> updated state variable are not immediately available after setState call,but only after the re-render
+ -> this is also applies when only one state variable is updated
+ -> if we need to update state based on previous update,we  use setState with call back(SetAnswer(answer=> ...))
+ => Batching beyond event handler function
+ -> automatic bathcing for event handler was in react 17 its for timeout and promises and native events too in react18+ 
  */
