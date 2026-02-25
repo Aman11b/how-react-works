@@ -46,7 +46,10 @@ function Tabbed({ content }) {
       </div>
 
       {activeTab <= 2 ? (
-        <TabContent item={content.at(activeTab)} />
+        <TabContent
+          item={content.at(activeTab)}
+          key={content.at(activeTab).summary}
+        />
       ) : (
         <DifferentContent />
       )}
@@ -217,4 +220,36 @@ function DifferentContent() {
  * - Updated DOM
  * - Synchronous : DOM update are written in on go ,to keep UI consistent
  * 4.Browser Paint (updated UI on screen)
+ */
+
+/**
+ * How Diffing works
+ * -> 2 Fundamental Assumption
+ * - Two element of different types will produce different trees
+ * - Element with a stable key prop stay the same across renders
+ * => this allowes reqact to go from O(n^3) to O(n) operations per 1000 element
+ * -> its comparing element by element based on its position in tree
+ * 1. Same position,different elelemt
+ * - React assume entire sub-tree is no longer valid
+ * - old component are destroyed and removed from DOM ,including state
+ * - tree might be rebuilt if children stayed the same(state is reset)
+ * 2. Same position ,same element
+ * - element will be kept (as well as child element), including state
+ * - sometimes this is not what we want.. then we can use key prop
+ */
+
+/**
+ * KEY PROP
+ * -> special prop that we use to tell the diffing algo that an element is unique
+ * -> allow react to distinguish between multiple instances of the same component type
+ * -> when a key stays the same across renders,the elelemt will be kept in DOM(even if the position in the tree changes)
+ * - using key in list
+ * -> when a key chnages between render,the elelemt will be destroyed and a new one will be created (even if the position in the tree is the same as before)
+ * - using key to reset the state
+ * 1. KEYS IN LISTS (STABLE KEY)
+ * -> no key-> adding a new list item -> same element ,but different position in tree,so they are removed and recreated in the DOM(bad for performance)
+ * -> with keys -> adding new lits item ->different position in the tree but the key stays the same,so the element will be kept in DOM
+ * 2. KEY PROP TO RESET STATE (CHANGING KEY)
+ * -> if we have the same element at the same position in the tree the dom elelemt  and state will be kept
+ * -> if we have a question component with a answer and we chnage the question the answer will remain the same and irrelevent in this case coz of the rule hnece use key so that its is differentiated and the sate will be reset
  */
