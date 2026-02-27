@@ -328,3 +328,32 @@ function DifferentContent() {
  => Batching beyond event handler function
  -> automatic bathcing for event handler was in react 17 its for timeout and promises and native events too in react18+ 
  */
+
+/**
+ * How event work in react
+ * => DOM refresher:event propagation and delegation
+ * -> when any event is triggered en event will be created at root of tree,then it will travel to the place from where it has triggered that is target element this is called capturing phase
+ * -> at target there is a event handler function
+ * -> then event will travel back to the top it is called bubbling phase
+ * - By default,event handlers listen to event onthe target and during the bubbling phase
+ * - we can prevent bubbling with stopPropagation()
+ * => Event Delegation
+ * - handeling event for multiple element centrally in on single parent element
+ * - better for performanc and memory as it needs onlu one handler function
+ * -> react register all event handler on the root DOM container.This is where all event are handled
+ * - Behind the scene,React perfomr event delegation for all events in our applications
+ * => Synthetix events
+ * -> wrapper around the DOM's native event object
+ * -> has some interfaec as native event object,like stopPropagation() and preventDefault()
+ * -> fixes browser inconsistencies ,so that event works in the exact same way in all browser
+ * -> most synthetic events bubble(including focus blur and chnage),except for scroll
+
+ */
+/**
+ * LIBRARY vs FRAMEWORK vs THE REACT ECOSYSTEM
+ * -> Framework (all in one kit)
+ * - everything you need to build a completed application is included in the framework("batteries included")
+ * -> liberary (seperate ingredient)
+ * - view library (react just draw component on UI)
+ * - enternal library is needed
+ */
